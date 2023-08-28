@@ -81,10 +81,10 @@ export const asyncRouterMap = [
     }, {
       path: 'house',
       component: () => import('@/views/lease/house'),
-      name: '房屋信息',
-      key: '@Get:lv_lease_house',
+      name: '租赁合同',
+      key: '@Get:lv_lease_house_list',
       meta: {
-        title: '房屋信息',
+        title: '租赁合同',
         icon: 'documentation'
       }
     }]
