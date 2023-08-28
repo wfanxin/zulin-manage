@@ -73,7 +73,7 @@ export const asyncRouterMap = [
       path: 'company',
       component: () => import('@/views/lease/company'),
       name: '租赁公司',
-      key: '@Get:lv_lease_company',
+      key: '@Get:lv_lease_company_list',
       meta: {
         title: '租赁公司',
         icon: 'documentation'

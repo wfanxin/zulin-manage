@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column prop="remark" label="备注">
       </el-table-column>
-      <el-table-column prop="user_name" label="创建人" width="120">
+      <el-table-column prop="user_name" label="创建人" width="120" v-if="this.roleKey === 'admin'">
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template slot-scope="scope">
@@ -64,7 +64,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="resetForm()">取消</el-button>
-        <el-button v-if="dialogStatus == 'create'" type="primary" @click="createData" :loading="addIsLoading">新增</el-button>
+        <el-button v-if="dialogStatus == 'create'" type="primary" @click="createData" :loading="addIsLoading">添加</el-button>
         <el-button v-else type="primary" @click="updateData" :loading="editIsLoading">修改</el-button>
       </div>
     </el-dialog>
@@ -78,9 +78,9 @@ import {
   edit,
   del
 } from '@/api/company'
-// import {
-//   fun_getRoleKey
-// } from '@/utils/common'
+import {
+  fun_getRole
+} from '@/utils/common'
 
 export default {
   data() {
@@ -170,7 +170,14 @@ export default {
     handleEdit(row) {
       this.dialogStatus = 'update'
       this.dialogTitle = '编辑'
-      this.editForm = row
+      this.editForm = {
+        id: row.id,
+        company_name: row.company_name,
+        company_address: row.company_address,
+        contact_name: row.contact_name,
+        contact_mobile: row.contact_mobile,
+        remark: row.remark
+      }
       this.dialogFormVisible = true
     },
     handleDel(row) {
@@ -209,7 +216,7 @@ export default {
     }
   },
   mounted() {
-    // this.roleKey = fun_getRoleKey()
+    this.roleKey = fun_getRole()
     this.getList()
   }
 }
