@@ -48,7 +48,7 @@
 
     <!--编辑界面-->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="false" :show-close="false" width="70%">
-      <el-form :model="editForm" label-width="110px" :rules="formRules" ref="form" class="dialogForm">
+      <el-form :model="editForm" label-width="110px" :rules="formRules" ref="form">
         <div class="form-item-title">租金</div>
         <el-row>
           <el-col :span="8">
@@ -68,11 +68,11 @@
             <el-form-item label="装修期" prop="repair_period">
               <el-input v-model="editForm.repair_period" auto-complete="off" class="input-class"></el-input>
             </el-form-item>
-            <el-form-item label="单价㎡/元/日" prop="unit_price">
+            <el-form-item label="单价元/㎡/日" prop="unit_price">
               <el-input v-model="editForm.unit_price" auto-complete="off" class="input-class"></el-input>
             </el-form-item>
-            <el-form-item label="租金涨幅方式" prop="increase_type">
-              <el-input v-model="editForm.increase_type" auto-complete="off" class="input-class"></el-input>
+            <el-form-item label="租金涨幅">
+              <el-button type="primary" size="small" @click="setIncrease">配置</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -118,7 +118,7 @@
             <el-form-item label="物业合同编号" prop="property_contract_number">
               <el-input v-model="editForm.property_contract_number" auto-complete="off" class="input-class"></el-input>
             </el-form-item>
-            <el-form-item label="单价㎡/元/月" prop="property_unit_price">
+            <el-form-item label="单价元/㎡/月" prop="property_unit_price">
               <el-input v-model="editForm.property_unit_price" auto-complete="off" class="input-class"></el-input>
             </el-form-item>
           </el-col>
@@ -141,8 +141,8 @@
             <el-form-item label="联系方式" prop="property_contact_info">
               <el-input v-model="editForm.property_contact_info" auto-complete="off" class="input-class"></el-input>
             </el-form-item>
-            <el-form-item label="物业涨幅方式" prop="property_increase_type">
-              <el-input v-model="editForm.property_increase_type" auto-complete="off" class="input-class"></el-input>
+            <el-form-item label="物业涨幅">
+              <el-button type="primary" size="small" @click="setIncrease">配置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -152,6 +152,47 @@
         <el-button @click.native="resetForm()">取消</el-button>
         <el-button v-if="dialogStatus == 'create'" type="primary" @click="createData" :loading="addIsLoading">添加</el-button>
         <el-button v-else type="primary" @click="updateData" :loading="editIsLoading">修改</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="租金涨幅配置" :visible.sync="dialogSetTableVisible" :close-on-click-modal="false" :show-close="false" width="600px">
+      <el-form>
+        <el-row>
+          <el-form-item label="涨幅方式" prop="pay_method" label-width="75px">
+            <el-select v-model="editForm.increase_type" placeholder="请选择">
+              <el-option
+                v-for="item in increase_type_list"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-row>
+        <el-row v-for="(item, index) in editForm.increase_content" :key="index">
+          <template v-if="editForm.increase_type === 1">
+            <el-col :span="12">
+              <el-form-item :label="'第'+(index+1)+'年'" label-width="75px">
+                <el-input v-model="item.percent" auto-complete="off" placeholder="递增比例" class="input-class"><template slot="append">%</template></el-input>
+              </el-form-item>
+            </el-col>
+          </template>
+          <template v-else-if="editForm.increase_type === 2">
+            <el-col :span="12">
+              <el-form-item :label="'第'+(index+1)+'年'" label-width="75px">
+                <el-input v-model="item.unit_price" auto-complete="off" placeholder="租金单价" class="input-class"><template slot="append">元/㎡/日</template></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-input v-model="item.year_price" auto-complete="off" placeholder="年租金" class="input-class"><template slot="append">元</template></el-input>
+            </el-col>
+          </template>
+        </el-row>
+      </el-form>
+      
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogSetTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogSetTableVisible = false">确 定</el-button>
       </div>
     </el-dialog>
 	</section>
@@ -183,12 +224,21 @@ export default {
       dialogTitle: '',
       editForm: {},
       formRules: {
-        company_name: [{ required: true, message: '请输入公司名称', trigger: 'blur' }]
+        company_id: [{ required: true, message: '请选择租赁公司', trigger: 'blur' }],
+        shop_number: [{ required: true, message: '请输入商铺号', trigger: 'blur' }],
+        lease_area: [{ required: true, message: '请输入租赁面积', trigger: 'blur' }],
+        lease_year: [{ required: true, message: '请输入租赁年限', trigger: 'blur' }],
+        unit_price: [{ required: true, message: '请输入租金单价', trigger: 'blur' }],
+        pay_method: [{ required: true, message: '请选择租金支付方式', trigger: 'blur' }],
+        property_unit_price: [{ required: true, message: '请输入物业费单价', trigger: 'blur' }],
+        property_pay_method: [{ required: true, message: '请选择物业支付方式', trigger: 'blur' }]
       },
+      dialogSetTableVisible: false,
       loading: false,
       data: [],
       company_list: [],
       pay_method_list: [],
+      increase_type_list: [],
       page: 1,
       pageSize: 20,
       total: 0
@@ -248,11 +298,28 @@ export default {
       this.dialogStatus = 'create'
       this.dialogTitle = '添加'
       this.editForm = {
-        company_name: '',
-        company_address: '',
-        contact_name: '',
-        contact_mobile: '',
-        remark: ''
+        company_id: '',
+        shop_number: '',
+        lease_area: '',
+        begin_lease_date: '',
+        stat_lease_date: '',
+        lease_year: 1,
+        repair_period: '',
+        category: '',
+        contract_number: '',
+        unit_price: '',
+        performance_bond: '',
+        pay_method: '',
+        increase_type: 1,
+        increase_content: [],
+
+        property_contract_number: '',
+        property_safety_person: '',
+        property_contact_info: '',
+        property_unit_price: '',
+        property_pay_method: '',
+        property_increase_type: '',
+        property_increase_content: []
       }
       this.dialogFormVisible = true
     },
@@ -261,13 +328,41 @@ export default {
       this.dialogTitle = '编辑'
       this.editForm = {
         id: row.id,
-        company_name: row.company_name,
-        company_address: row.company_address,
-        contact_name: row.contact_name,
-        contact_mobile: row.contact_mobile,
-        remark: row.remark
+        company_id: row.company_id,
+        shop_number: row.shop_number,
+        lease_area: row.lease_area,
+        begin_lease_date: row.begin_lease_date,
+        stat_lease_date: row.stat_lease_date,
+        lease_year: row.lease_year,
+        repair_period: row.repair_period,
+        category: row.category,
+        contract_number: row.contract_number,
+        unit_price: row.unit_price,
+        performance_bond: row.performance_bond,
+        pay_method: row.pay_method,
+        increase_type: row.increase_type,
+        increase_content: [],
+
+        property_contract_number: row.property_contract_number,
+        property_safety_person: row.property_safety_person,
+        property_contact_info: row.property_contact_info,
+        property_unit_price: row.property_unit_price,
+        property_pay_method: row.property_pay_method,
+        property_increase_type: row.property_increase_type,
+        property_increase_content: []
       }
       this.dialogFormVisible = true
+    },
+    setIncrease() {
+      this.editForm.increase_content = []
+      for (let index = 0; index < this.editForm.lease_year; index++) {
+        this.editForm.increase_content.push({
+          percent: '',
+          unit_price: '',
+          year_price: ''
+        })
+      }
+      this.dialogSetTableVisible = true
     },
     handleDel(row) {
       this.$confirm('确认删除吗？', '提示', {
@@ -302,6 +397,7 @@ export default {
           this.data = res.data
           this.company_list = res.company_list
           this.pay_method_list = res.pay_method_list
+          this.increase_type_list = res.increase_type_list
         }
       }).catch(() => { this.loading = false })
     }
