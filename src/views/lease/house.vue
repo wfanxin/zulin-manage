@@ -22,19 +22,19 @@
 
     <!--列表-->
     <el-table v-loading="loading" :data="data" highlight-current-row style="width: 100%;">
-      <el-table-column prop="company_name" label="公司名称">
+      <el-table-column prop="company_name" label="租赁公司">
       </el-table-column>
-      <el-table-column prop="company_address" label="公司地址">
+      <el-table-column prop="shop_number" label="商铺号">
       </el-table-column>
-      <el-table-column prop="contact_name" label="联系人" width="120">
+      <el-table-column prop="lease_area" label="租赁面积㎡" width="120">
       </el-table-column>
-      <el-table-column prop="contact_mobile" label="联系电话" width="160">
+      <el-table-column prop="lease_year" label="租赁年限" width="100">
       </el-table-column>
-      <el-table-column prop="remark" label="备注">
+      <el-table-column prop="unit_price" label="租金单价元/㎡/日" width="160">
       </el-table-column>
-      <el-table-column prop="user_name" label="创建人" width="120" v-if="this.roleKey === 'admin'">
+      <el-table-column prop="property_unit_price" label="物业单价元/㎡/月" width="160">
       </el-table-column>
-      <el-table-column label="操作" width="160">
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="small" @click="handleEdit(scope.row)">修改</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.row)">删除</el-button>
@@ -63,7 +63,13 @@
               </el-select>
             </el-form-item>
             <el-form-item label="起始租期" prop="begin_lease_date">
-              <el-input v-model="editForm.begin_lease_date" auto-complete="off" class="input-class"></el-input>
+              <el-date-picker
+                class="input-class"
+                v-model="editForm.begin_lease_date"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期">
+              </el-date-picker>
             </el-form-item>
             <el-form-item label="装修期" prop="repair_period">
               <el-input v-model="editForm.repair_period" auto-complete="off" class="input-class"></el-input>
@@ -80,7 +86,13 @@
               <el-input v-model="editForm.shop_number" auto-complete="off" class="input-class"></el-input>
             </el-form-item>
             <el-form-item label="计租日期" prop="stat_lease_date">
-              <el-input v-model="editForm.stat_lease_date" auto-complete="off" class="input-class"></el-input>
+              <el-date-picker
+                class="input-class"
+                v-model="editForm.stat_lease_date"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期">
+              </el-date-picker>
             </el-form-item>
             <el-form-item label="业态/品类" prop="category">
               <el-input v-model="editForm.category" auto-complete="off" class="input-class"></el-input>
