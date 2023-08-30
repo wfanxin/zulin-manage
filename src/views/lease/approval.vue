@@ -13,7 +13,7 @@
           <el-form-item>
             <el-select v-model="filters.status" clearable placeholder="请选择">
               <el-option
-                v-for="item in status_options"
+                v-for="item in approval_status_options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -46,17 +46,15 @@
       </el-table-column>
       <el-table-column prop="lease_area" label="状态" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.status === 0" style="color: #909399;">待提交</span>
-          <span v-else-if="scope.row.status === 1" style="color: #409EFF;">审批中</span>
+          <span v-if="scope.row.status === 1" style="color: #409EFF;">待审批</span>
           <span v-else-if="scope.row.status === 2" style="color: #67C23A;">审批通过</span>
-          <span v-else-if="scope.row.status === 3" style="color: #F56C6C;">审批失败</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
-          <el-button size="small" @click="handleEdit(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">修改</el-button>
-          <el-button size="small" type="primary" @click="submitReview(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">提交审批</el-button>
-          <el-button type="danger" size="small" @click="handleDel(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">删除</el-button>
+          <el-button size="small" @click="view(scope.row)">查看</el-button>
+          <el-button size="small" type="success" @click="pass(scope.row)" v-if="scope.row.status === 1">通过</el-button>
+          <el-button size="small" type="danger" @click="fail(scope.row)" v-if="scope.row.status === 1">失败</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -181,8 +179,6 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="resetForm()">取消</el-button>
-        <el-button v-if="dialogStatus == 'create'" type="primary" @click="createData" :loading="addIsLoading">添加</el-button>
-        <el-button v-else type="primary" @click="updateData" :loading="editIsLoading">修改</el-button>
       </div>
     </el-dialog>
 
@@ -273,11 +269,9 @@
 <script>
 import {
   list,
-  add,
-  edit,
-  submitReview,
-  del
-} from '@/api/house'
+  pass,
+  fail
+} from '@/api/approval'
 import {
   fun_getRole
 } from '@/utils/common'
@@ -314,7 +308,7 @@ export default {
       company_list: [],
       pay_method_list: [],
       increase_type_list: [],
-      status_options: [],
+      approval_status_options: [],
       page: 1,
       pageSize: 20,
       total: 0
@@ -333,42 +327,6 @@ export default {
     handleSearch() {
       this.page = 1
       this.getList()
-    },
-    createData() {
-      this.$refs.form.validate(valid => {
-        if (valid) {
-          const params = Object.assign({}, this.editForm)
-          add(params).then(res => {
-            this.addIsLoading = false
-            if (res.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success'
-              })
-              this.dialogFormVisible = false
-              this.getList()
-            }
-          }).catch(() => { this.addIsLoading = false })
-        }
-      })
-    },
-    updateData() {
-      this.$refs.form.validate(valid => {
-        if (valid) {
-          const params = Object.assign({}, this.editForm)
-          edit(params).then(res => {
-            this.editIsLoading = false
-            if (res.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success'
-              })
-              this.dialogFormVisible = false
-              this.getList()
-            }
-          }).catch(() => { this.editIsLoading = false })
-        }
-      })
     },
     handleAdd() {
       this.dialogStatus = 'create'
@@ -396,36 +354,6 @@ export default {
         property_pay_method: '',
         property_increase_type: 1,
         property_increase_content: []
-      }
-      this.dialogFormVisible = true
-    },
-    handleEdit(row) {
-      this.dialogStatus = 'update'
-      this.dialogTitle = '编辑'
-      this.editForm = {
-        id: row.id,
-        company_id: row.company_id,
-        shop_number: row.shop_number,
-        lease_area: row.lease_area,
-        begin_lease_date: row.begin_lease_date,
-        stat_lease_date: row.stat_lease_date,
-        lease_year: row.lease_year,
-        repair_period: row.repair_period,
-        category: row.category,
-        contract_number: row.contract_number,
-        unit_price: row.unit_price,
-        performance_bond: row.performance_bond,
-        pay_method: row.pay_method,
-        increase_type: row.increase_type,
-        increase_content: row.increase_content,
-
-        property_contract_number: row.property_contract_number,
-        property_safety_person: row.property_safety_person,
-        property_contact_info: row.property_contact_info,
-        property_unit_price: row.property_unit_price,
-        property_pay_method: row.property_pay_method,
-        property_increase_type: row.property_increase_type,
-        property_increase_content: row.property_increase_content
       }
       this.dialogFormVisible = true
     },
@@ -469,13 +397,16 @@ export default {
 
       this.dialogSetPropertyTableVisible = true
     },
-    submitReview(row) {
-      this.$confirm('确认提交审批？', '提示', {
+    view() {
+      alert('开发中')
+    },
+    pass(row) {
+      this.$confirm('确认审批通过？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        submitReview({ id: row.id }).then(res => {
+        pass({ id: row.id }).then(res => {
           if (res.code === 0) {
             this.$message({
               message: '操作成功',
@@ -486,13 +417,13 @@ export default {
         })
       }).catch(() => {})
     },
-    handleDel(row) {
-      this.$confirm('确认删除？', '提示', {
+    fail(row) {
+      this.$confirm('确认审批失败？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        del({ id: row.id }).then(res => {
+        fail({ id: row.id }).then(res => {
           if (res.code === 0) {
             this.$message({
               message: '操作成功',
@@ -520,7 +451,7 @@ export default {
           this.company_list = res.company_list
           this.pay_method_list = res.pay_method_list
           this.increase_type_list = res.increase_type_list
-          this.status_options = res.status_options
+          this.approval_status_options = res.approval_status_options
         }
       }).catch(() => { this.loading = false })
     }

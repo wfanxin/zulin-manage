@@ -24,6 +24,14 @@ export function edit(params) {
   })
 }
 
+export function submitReview(params) {
+  return request({
+    url: '/lv/lease/house/submitReview',
+    method: 'post',
+    data: params
+  })
+}
+
 export function del(params) {
   return request({
     url: '/lv/lease/house/del',

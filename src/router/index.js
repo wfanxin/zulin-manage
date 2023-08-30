@@ -87,6 +87,15 @@ export const asyncRouterMap = [
         title: '租赁合同',
         icon: 'documentation'
       }
+    }, {
+      path: 'approval',
+      component: () => import('@/views/lease/approval'),
+      name: '合同审批',
+      key: '@Get:lv_lease_approval_list',
+      meta: {
+        title: '合同审批',
+        icon: 'documentation'
+      }
     }]
   }, {
     path: '/system',
