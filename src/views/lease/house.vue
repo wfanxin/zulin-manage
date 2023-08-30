@@ -154,7 +154,7 @@
               <el-input v-model="editForm.property_contact_info" auto-complete="off" class="input-class"></el-input>
             </el-form-item>
             <el-form-item label="物业涨幅">
-              <el-button type="primary" size="small" @click="setIncrease">配置</el-button>
+              <el-button type="primary" size="small" @click="setPropertyIncrease">配置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -167,6 +167,7 @@
       </div>
     </el-dialog>
 
+    <!-- 租金涨幅配置 -->
     <el-dialog title="租金涨幅配置" :visible.sync="dialogSetTableVisible" :close-on-click-modal="false" :show-close="false" width="600px">
       <el-form>
         <el-row>
@@ -203,8 +204,48 @@
       </el-form>
       
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogSetTableVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogSetTableVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 物业涨幅配置 -->
+    <el-dialog title="物业涨幅配置" :visible.sync="dialogSetPropertyTableVisible" :close-on-click-modal="false" :show-close="false" width="600px">
+      <el-form>
+        <el-row>
+          <el-form-item label="涨幅方式" prop="pay_method" label-width="75px">
+            <el-select v-model="editForm.property_increase_type" placeholder="请选择">
+              <el-option
+                v-for="item in increase_type_list"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-row>
+        <el-row v-for="(item, index) in editForm.property_increase_content" :key="index">
+          <template v-if="editForm.property_increase_type === 1">
+            <el-col :span="12">
+              <el-form-item :label="'第'+(index+1)+'年'" label-width="75px">
+                <el-input v-model="item.percent" auto-complete="off" placeholder="递增比例" class="input-class"><template slot="append">%</template></el-input>
+              </el-form-item>
+            </el-col>
+          </template>
+          <template v-else-if="editForm.property_increase_type === 2">
+            <el-col :span="12">
+              <el-form-item :label="'第'+(index+1)+'年'" label-width="75px">
+                <el-input v-model="item.unit_price" auto-complete="off" placeholder="租金单价" class="input-class"><template slot="append">元/㎡/日</template></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-input v-model="item.year_price" auto-complete="off" placeholder="年租金" class="input-class"><template slot="append">元</template></el-input>
+            </el-col>
+          </template>
+        </el-row>
+      </el-form>
+      
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogSetPropertyTableVisible = false">确 定</el-button>
       </div>
     </el-dialog>
 	</section>
@@ -246,6 +287,7 @@ export default {
         property_pay_method: [{ required: true, message: '请选择物业支付方式', trigger: 'blur' }]
       },
       dialogSetTableVisible: false,
+      dialogSetPropertyTableVisible: false,
       loading: false,
       data: [],
       company_list: [],
@@ -330,7 +372,7 @@ export default {
         property_contact_info: '',
         property_unit_price: '',
         property_pay_method: '',
-        property_increase_type: '',
+        property_increase_type: 1,
         property_increase_content: []
       }
       this.dialogFormVisible = true
@@ -353,7 +395,7 @@ export default {
         performance_bond: row.performance_bond,
         pay_method: row.pay_method,
         increase_type: row.increase_type,
-        increase_content: [],
+        increase_content: row.increase_content,
 
         property_contract_number: row.property_contract_number,
         property_safety_person: row.property_safety_person,
@@ -361,20 +403,49 @@ export default {
         property_unit_price: row.property_unit_price,
         property_pay_method: row.property_pay_method,
         property_increase_type: row.property_increase_type,
-        property_increase_content: []
+        property_increase_content: row.property_increase_content
       }
       this.dialogFormVisible = true
     },
+    // 租金涨幅
     setIncrease() {
-      this.editForm.increase_content = []
-      for (let index = 0; index < this.editForm.lease_year; index++) {
-        this.editForm.increase_content.push({
-          percent: '',
-          unit_price: '',
-          year_price: ''
-        })
+      if (this.editForm.increase_content.length < this.editForm.lease_year) { // 不够，则追加
+        for (let index = this.editForm.increase_content.length; index < this.editForm.lease_year; index++) {
+          this.editForm.increase_content.push({
+            percent: '',
+            unit_price: '',
+            year_price: ''
+          })
+        }
       }
+
+      if (this.editForm.increase_content.length > this.editForm.lease_year) { // 超出，则减少
+        for (let index = this.editForm.increase_content.length - 1; index >= this.editForm.lease_year; index--) {
+          this.editForm.increase_content.splice(index, 1)
+        }
+      }
+
       this.dialogSetTableVisible = true
+    },
+    // 物业涨幅
+    setPropertyIncrease() {
+      if (this.editForm.property_increase_content.length < this.editForm.lease_year) { // 不够，则追加
+        for (let index = this.editForm.property_increase_content.length; index < this.editForm.lease_year; index++) {
+          this.editForm.property_increase_content.push({
+            percent: '',
+            unit_price: '',
+            year_price: ''
+          })
+        }
+      }
+
+      if (this.editForm.property_increase_content.length > this.editForm.lease_year) { // 超出，则减少
+        for (let index = this.editForm.property_increase_content.length - 1; index >= this.editForm.lease_year; index--) {
+          this.editForm.property_increase_content.splice(index, 1)
+        }
+      }
+
+      this.dialogSetPropertyTableVisible = true
     },
     handleDel(row) {
       this.$confirm('确认删除吗？', '提示', {
