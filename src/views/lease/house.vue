@@ -49,7 +49,15 @@
           <span v-if="scope.row.status === 0" style="color: #909399;">待提交</span>
           <span v-else-if="scope.row.status === 1" style="color: #409EFF;">审批中</span>
           <span v-else-if="scope.row.status === 2" style="color: #67C23A;">审批通过</span>
-          <span v-else-if="scope.row.status === 3" style="color: #F56C6C;">审批失败</span>
+          <span v-else-if="scope.row.status === 3" style="color: #F56C6C; display: flex;">审批失败<el-popover
+              placement="top-start"
+              title=""
+              width="200"
+              trigger="hover"
+              :content="scope.row.fail_reason">
+              <el-button type="text" slot="reference">原因</el-button>
+            </el-popover>
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="250">
@@ -215,9 +223,9 @@
                 <el-input v-model="item.unit_price" auto-complete="off" placeholder="租金单价" class="input-class"><template slot="append">元/㎡/日</template></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <!-- <el-col :span="12">
               <el-input v-model="item.year_price" auto-complete="off" placeholder="年租金" class="input-class"><template slot="append">元</template></el-input>
-            </el-col>
+            </el-col> -->
           </template>
         </el-row>
       </el-form>
@@ -347,6 +355,7 @@ export default {
               })
               this.dialogFormVisible = false
               this.getList()
+              this.resetForm()
             }
           }).catch(() => { this.addIsLoading = false })
         }
@@ -365,6 +374,7 @@ export default {
               })
               this.dialogFormVisible = false
               this.getList()
+              this.resetForm()
             }
           }).catch(() => { this.editIsLoading = false })
         }
@@ -541,5 +551,9 @@ export default {
 }
 .input-class {
   width: 200px;
+}
+.el-button--text {
+  padding: 0;
+  padding-left: 10px;
 }
 </style>
