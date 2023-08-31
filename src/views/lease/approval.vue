@@ -62,198 +62,18 @@
 
     <!--查看界面-->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="false" width="70%">
-      <el-form :model="editForm" label-width="110px" ref="form">
-        <div class="form-item-title">租金</div>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="租赁公司" prop="company_id">
-              <el-select v-model="editForm.company_id" filterable placeholder="请选择" disabled>
-                <el-option
-                  v-for="item in company_list"
-                  :key="item.id"
-                  :label="item.company_name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="起始租期" prop="begin_lease_date">
-              <el-date-picker
-                disabled
-                class="input-class"
-                v-model="editForm.begin_lease_date"
-                type="date"
-                value-format="yyyy-MM-dd"
-                placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
-            <el-form-item label="装修期" prop="repair_period">
-              <el-input v-model="editForm.repair_period" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="单价元/㎡/日" prop="unit_price">
-              <el-input v-model="editForm.unit_price" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="租金涨幅">
-              <el-button type="text" size="small" @click="setIncrease">查看</el-button>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="商铺号" prop="shop_number">
-              <el-input v-model="editForm.shop_number" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="计租日期" prop="stat_lease_date">
-              <el-date-picker
-                disabled
-                class="input-class"
-                v-model="editForm.stat_lease_date"
-                type="date"
-                value-format="yyyy-MM-dd"
-                placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
-            <el-form-item label="业态/品类" prop="category">
-              <el-input v-model="editForm.category" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="履约保证金" prop="performance_bond">
-              <el-input v-model="editForm.performance_bond" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="租赁面积㎡" prop="lease_area">
-              <el-input v-model="editForm.lease_area" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="租赁年限" prop="lease_year">
-              <el-input-number v-model="editForm.lease_year" :min="1" :max="100" auto-complete="off" disabled></el-input-number>
-            </el-form-item>
-            <el-form-item label="租赁合同编号" prop="contract_number">
-              <el-input v-model="editForm.contract_number" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="租金支付方式" prop="pay_method">
-              <el-select v-model="editForm.pay_method" placeholder="请选择" disabled>
-                <el-option
-                  v-for="item in pay_method_list"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <div class="form-item-title">物业费</div>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="物业合同编号" prop="property_contract_number">
-              <el-input v-model="editForm.property_contract_number" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="单价元/㎡/月" prop="property_unit_price">
-              <el-input v-model="editForm.property_unit_price" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="安全责任人" prop="property_safety_person">
-              <el-input v-model="editForm.property_safety_person" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="物业支付方式" prop="property_pay_method">
-              <el-select v-model="editForm.property_pay_method" placeholder="请选择" disabled>
-                <el-option
-                  v-for="item in pay_method_list"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="联系方式" prop="property_contact_info">
-              <el-input v-model="editForm.property_contact_info" auto-complete="off" class="input-class" disabled></el-input>
-            </el-form-item>
-            <el-form-item label="物业涨幅">
-              <el-button type="text" size="small" @click="setPropertyIncrease">查看</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+      <!-- 详情 -->
+      <house-detail
+        :detail="editForm"
+        :company_list="company_list"
+        :pay_method_list="pay_method_list"
+        :increase_type_list="increase_type_list">
+      </house-detail>
 
       <div slot="footer" class="dialog-footer" v-if="editForm.status === 1">
         <el-button size="small" type="success" @click="pass(editForm)" v-if="editForm.status === 1">通过</el-button>
         <el-button size="small" type="danger" @click="fail(editForm)" v-if="editForm.status === 1">失败</el-button>
       </div>
-    </el-dialog>
-
-    <!-- 租金涨幅配置 -->
-    <el-dialog title="租金涨幅配置" :visible.sync="dialogSetTableVisible" :close-on-click-modal="false" width="600px">
-      <el-form>
-        <el-row>
-          <el-form-item label="涨幅方式" prop="pay_method" label-width="75px">
-            <el-select v-model="editForm.increase_type" placeholder="请选择" disabled>
-              <el-option
-                v-for="item in increase_type_list"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-row>
-        <el-row v-for="(item, index) in editForm.increase_content" :key="index">
-          <template v-if="editForm.increase_type === 1">
-            <el-col :span="12">
-              <el-form-item :label="'第'+(index+1)+'年'" label-width="75px">
-                <el-input v-model="item.percent" auto-complete="off" placeholder="递增比例" class="input-class" disabled><template slot="append">%</template></el-input>
-              </el-form-item>
-            </el-col>
-          </template>
-          <template v-else-if="editForm.increase_type === 2">
-            <el-col :span="12">
-              <el-form-item :label="'第'+(index+1)+'年'" label-width="75px">
-                <el-input v-model="item.unit_price" auto-complete="off" placeholder="租金单价" class="input-class" disabled><template slot="append">元/㎡/日</template></el-input>
-              </el-form-item>
-            </el-col>
-            <!-- <el-col :span="12">
-              <el-input v-model="item.year_price" auto-complete="off" placeholder="年租金" class="input-class"><template slot="append">元</template></el-input>
-            </el-col> -->
-          </template>
-        </el-row>
-      </el-form>
-    </el-dialog>
-
-    <!-- 物业涨幅配置 -->
-    <el-dialog title="物业涨幅配置" :visible.sync="dialogSetPropertyTableVisible" :close-on-click-modal="false" width="600px">
-      <el-form>
-        <el-row>
-          <el-form-item label="涨幅方式" prop="pay_method" label-width="75px">
-            <el-select v-model="editForm.property_increase_type" placeholder="请选择" disabled>
-              <el-option
-                v-for="item in increase_type_list"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-row>
-        <el-row v-for="(item, index) in editForm.property_increase_content" :key="index">
-          <template v-if="editForm.property_increase_type === 1">
-            <el-col :span="12">
-              <el-form-item :label="'第'+(index+1)+'年'" label-width="75px">
-                <el-input v-model="item.percent" auto-complete="off" placeholder="递增比例" class="input-class" disabled><template slot="append">%</template></el-input>
-              </el-form-item>
-            </el-col>
-          </template>
-          <template v-else-if="editForm.property_increase_type === 2">
-            <el-col :span="12">
-              <el-form-item :label="'第'+(index+1)+'年'" label-width="75px">
-                <el-input v-model="item.unit_price" auto-complete="off" placeholder="租金单价" class="input-class" disabled><template slot="append">元/㎡/月</template></el-input>
-              </el-form-item>
-            </el-col>
-            <!-- <el-col :span="12">
-              <el-input v-model="item.year_price" auto-complete="off" placeholder="年租金" class="input-class"><template slot="append">元</template></el-input>
-            </el-col> -->
-          </template>
-        </el-row>
-      </el-form>
     </el-dialog>
 	</section>
 </template>
@@ -267,8 +87,12 @@ import {
 import {
   fun_getRole
 } from '@/utils/common'
+import houseDetail from '@/components/lease/house-detail'
 
 export default {
+  components: {
+    houseDetail
+  },
   data() {
     return {
       roleKey: '',
@@ -277,13 +101,9 @@ export default {
         shop_number: '',
         status: ''
       },
-      addIsLoading: false,
-      editIsLoading: false,
       dialogFormVisible: false,
       dialogTitle: '',
       editForm: {},
-      dialogSetTableVisible: false,
-      dialogSetPropertyTableVisible: false,
       loading: false,
       data: [],
       company_list: [],
@@ -308,14 +128,6 @@ export default {
     handleSearch() {
       this.page = 1
       this.getList()
-    },
-    // 租金涨幅
-    setIncrease() {
-      this.dialogSetTableVisible = true
-    },
-    // 物业涨幅
-    setPropertyIncrease() {
-      this.dialogSetPropertyTableVisible = true
     },
     view(row) {
       this.dialogTitle = '查看'
@@ -392,9 +204,6 @@ export default {
 <style>
 .el-textarea__inner{
   height: 120px;
-}
-.el-input.is-disabled .el-input__inner {
-  color: #606266;
 }
 </style>
 <style scoped>

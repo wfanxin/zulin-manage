@@ -65,6 +65,7 @@
           <el-button size="small" @click="handleEdit(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">修改</el-button>
           <el-button size="small" type="primary" @click="submitReview(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">提交审批</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">删除</el-button>
+          <el-button size="small" @click="view(scope.row)" v-if="scope.row.status === 2">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -275,6 +276,17 @@
         <el-button type="primary" @click="dialogSetPropertyTableVisible = false">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 查看 -->
+    <el-dialog title="查看" :visible.sync="dialogViewTableVisible" :close-on-click-modal="false" width="70%">
+      <!-- 详情 -->
+      <house-detail
+        :detail="editForm"
+        :company_list="company_list"
+        :pay_method_list="pay_method_list"
+        :increase_type_list="increase_type_list">
+      </house-detail>
+    </el-dialog>
 	</section>
 </template>
 
@@ -289,8 +301,12 @@ import {
 import {
   fun_getRole
 } from '@/utils/common'
+import houseDetail from '@/components/lease/house-detail'
 
 export default {
+  components: {
+    houseDetail
+  },
   data() {
     return {
       roleKey: '',
@@ -302,6 +318,7 @@ export default {
       addIsLoading: false,
       editIsLoading: false,
       dialogFormVisible: false,
+      dialogViewTableVisible: false,
       dialogStatus: '',
       dialogTitle: '',
       editForm: {},
@@ -516,6 +533,10 @@ export default {
     resetForm() {
       this.dialogFormVisible = false
       this.$refs['form'].resetFields()
+    },
+    view(row) {
+      this.editForm = row
+      this.dialogViewTableVisible = true
     },
     getList() {
       const params = Object.assign({}, this.filters)

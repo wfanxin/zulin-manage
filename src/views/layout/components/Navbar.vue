@@ -234,6 +234,15 @@ export default {
     setInterval(function() {
       that.cur_date = window.localStorage.getItem('cur_date')
     }, 1000)
+
+    this.$notify({
+      title: '提示',
+      message: '这是一条不会自动关闭的消息',
+      duration: 0,
+      onClose: () => {
+        alert('关闭')
+      }
+    })
   }
 }
 </script>
