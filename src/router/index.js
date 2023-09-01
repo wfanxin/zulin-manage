@@ -96,6 +96,15 @@ export const asyncRouterMap = [
         title: '合同审批',
         icon: 'documentation'
       }
+    }, {
+      path: 'notice',
+      component: () => import('@/views/lease/notice'),
+      name: '公告信息',
+      key: '@Get:lv_lease_notice_list',
+      meta: {
+        title: '公告信息',
+        icon: 'documentation'
+      }
     }]
   }, {
     path: '/system',

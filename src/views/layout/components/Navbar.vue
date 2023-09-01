@@ -77,6 +77,7 @@ import nxGithub from '@/components/nx-github/index'
 import nxSkin from '@/components/nx-skin/index'
 import store from '@/store'
 import { changePwd } from '@/api/user-table'
+import { getNotice, read } from '@/api/notice'
 export default {
   data() {
     var checkPwd = (rule, value, callback) => {
@@ -227,6 +228,30 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // In order to re-instantiate the vue-router object to avoid bugs
       })
+    },
+    getNotice() {
+      setTimeout(() => {
+        getNotice({}).then(res => {
+          if (res.code === 0 && res.data) {
+            this.$notify({
+              title: '',
+              dangerouslyUseHTMLString: true,
+              message: '<div style="font-weight: bold;">' + res.data.title + '</div><div>' + res.data.created_at + '</div><div style="color: #409EFF;">' + res.data.content + '</div>',
+              duration: 0,
+              onClose: () => {
+                this.read(res.data.id)
+              }
+            })
+          } else {
+            this.getNotice()
+          }
+        }).catch(() => { this.getNotice() })
+      }, 3000)
+    },
+    read(id) {
+      read({ id: id }).then(res => {
+        this.getNotice()
+      }).catch(() => { this.getNotice() })
     }
   },
   mounted() {
@@ -235,14 +260,7 @@ export default {
       that.cur_date = window.localStorage.getItem('cur_date')
     }, 1000)
 
-    this.$notify({
-      title: '提示',
-      message: '这是一条不会自动关闭的消息',
-      duration: 0,
-      onClose: () => {
-        alert('关闭')
-      }
-    })
+    this.getNotice()
   }
 }
 </script>
