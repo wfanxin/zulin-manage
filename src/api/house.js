@@ -39,3 +39,11 @@ export function del(params) {
     data: params
   })
 }
+
+export function exportExcel(params) {
+  return request({
+    url: '/lv/lease/house/exportExcel',
+    method: 'post',
+    data: params
+  })
+}

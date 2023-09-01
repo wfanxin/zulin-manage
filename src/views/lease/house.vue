@@ -66,6 +66,7 @@
           <el-button size="small" type="primary" @click="submitReview(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">提交审批</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">删除</el-button>
           <el-button size="small" @click="view(scope.row)" v-if="scope.row.status === 2">查看</el-button>
+          <el-button size="small" type="primary" @click="exportExcel(scope.row)" v-if="scope.row.status === 2">导出excel</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -296,7 +297,8 @@ import {
   add,
   edit,
   submitReview,
-  del
+  del,
+  exportExcel
 } from '@/api/house'
 import {
   fun_getRole
@@ -537,6 +539,16 @@ export default {
     view(row) {
       this.editForm = row
       this.dialogViewTableVisible = true
+    },
+    exportExcel(row) {
+      exportExcel({ id: row.id }).then(res => {
+        if (res.code === 0) {
+          this.$message({
+            message: '操作成功',
+            type: 'success'
+          })
+        }
+      })
     },
     getList() {
       const params = Object.assign({}, this.filters)
