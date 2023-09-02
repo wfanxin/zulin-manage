@@ -543,10 +543,7 @@ export default {
     exportExcel(row) {
       exportExcel({ id: row.id }).then(res => {
         if (res.code === 0) {
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          })
+          window.open(res.excelUrl, '_blank')
         }
       })
     },
