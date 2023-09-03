@@ -149,7 +149,7 @@ export default {
             this.resetForm()
             this.getList()
           }
-        })
+        }).catch(() => {})
       }).catch(() => {})
     },
     fail(row) {
@@ -171,7 +171,7 @@ export default {
             this.resetForm()
             this.getList()
           }
-        })
+        }).catch(() => {})
       }).catch(() => {})
     },
     resetForm() {

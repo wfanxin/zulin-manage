@@ -121,7 +121,7 @@ export const asyncRouterMap = [
       component: () => import('@/views/system/permission'),
       name: '权限列表',
       key: '@Get:lv_permissions',
-      // hidden: true,
+      hidden: true,
       meta: {
         title: '权限列表',
         icon: 'lock'
@@ -151,7 +151,7 @@ export const asyncRouterMap = [
       component: () => import('@/views/system/log'),
       name: '操作日志',
       key: '@Get:lv_logs',
-      // hidden: true,
+      hidden: true,
       meta: {
         title: '操作日志',
         icon: 'form'
