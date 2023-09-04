@@ -35,9 +35,9 @@ export const constantRouterMap = [
     children: [
       {
         path: 'welcome',
-        name: '欢迎页',
+        name: '年统计',
         component: () => import('@/views/common/welcome'),
-        meta: { title: '首页', icon: 'dashboard' }
+        meta: { title: '年统计', icon: 'documentation' }
       }
     ]
   },

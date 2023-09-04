@@ -3,7 +3,7 @@
     <el-row style="margin: 30px 0 30px 0;">
       <el-col :span="1">&nbsp;</el-col>
       <el-col :span="23">
-        <el-select v-model="company_id" filterable placeholder="请选择租赁公司">
+        <el-select v-model="company_id" filterable placeholder="请选择租赁公司" @change="getData">
           <el-option
             v-for="item in company_list"
             :key="item.id"
@@ -17,12 +17,12 @@
       <el-col :span="1">&nbsp;</el-col>
       <el-col :span="10">
         <div class="histogram-title">租金</div>
-        <ve-pie :data="chartData1"></ve-pie>
+        <ve-pie :data="chartData" :settings="chartSettings"></ve-pie>
       </el-col>
       <el-col :span="2">&nbsp;</el-col>
       <el-col :span="10">
         <div class="histogram-title">物业费</div>
-        <ve-pie :data="chartData2"></ve-pie>
+        <ve-pie :data="property_chartData" :settings="chartSettings"></ve-pie>
       </el-col>
       <el-col :span="1">&nbsp;</el-col>
     </el-row>
@@ -30,29 +30,45 @@
 </template>
 
 <script>
+import {
+  getData
+} from '@/api/stat-price'
+import {
+  fun_getRole
+} from '@/utils/common'
+
 export default {
   data() {
     return {
+      roleKey: '',
       company_id: '',
       company_list: [],
-
-      chartData1: {
-        columns: ['年份', '金额'],
-        rows: [
-          { 年份: 2022, 金额: 0 },
-          { 年份: 2023, 金额: 0 },
-          { 年份: 2024, 金额: 0 }
-        ]
-      },
-      chartData2: {
-        columns: ['年份', '金额'],
-        rows: [
-          { 年份: 2022, 金额: 0 },
-          { 年份: 2023, 金额: 10 },
-          { 年份: 2024, 金额: 20 }
-        ]
+      chartData: {},
+      property_chartData: {},
+      chartSettings: {
+        label: {
+          formatter: function(data) {
+            return `${data.name}
+            ${data.value} (${data.percent.toFixed(1)}%)`
+          }
+        }
       }
     }
+  },
+  methods: {
+    getData() {
+      getData({ company_id: this.company_id }).then(res => {
+        if (res.code === 0) {
+          this.chartData = res.chartData
+          this.property_chartData = res.property_chartData
+          this.company_list = res.company_list
+        }
+      }).catch(() => {})
+    }
+  },
+  mounted() {
+    this.roleKey = fun_getRole()
+    this.getData()
   }
 }
 </script>
