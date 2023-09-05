@@ -47,3 +47,11 @@ export function exportExcel(params) {
     data: params
   })
 }
+
+export function preview(params) {
+  return request({
+    url: '/lv/lease/house/preview',
+    method: 'post',
+    data: params
+  })
+}

@@ -67,6 +67,8 @@
           <el-button type="danger" size="small" @click="handleDel(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">删除</el-button>
           <el-button size="small" @click="view(scope.row)" v-if="scope.row.status === 2">查看</el-button>
           <el-button size="small" type="primary" @click="exportExcel(scope.row)" v-if="scope.row.status === 2">导出excel</el-button>
+          <!-- <el-button size="small" @click="handleHousePreview(scope.row)" v-if="scope.row.status === 2">预览</el-button> -->
+          <el-button size="small" @click="print(scope.row)" v-if="scope.row.status === 2">打印</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -288,6 +290,9 @@
         :increase_type_list="increase_type_list">
       </house-detail>
     </el-dialog>
+
+    <!-- 预览 -->
+    <HousePreview ref="HousePreview"></HousePreview>
 	</section>
 </template>
 
@@ -298,16 +303,19 @@ import {
   edit,
   submitReview,
   del,
-  exportExcel
+  exportExcel,
+  preview
 } from '@/api/house'
 import {
   fun_getRole
 } from '@/utils/common'
 import houseDetail from '@/components/lease/house-detail'
+import HousePreview from '@/components/lease/house-preview'
 
 export default {
   components: {
-    houseDetail
+    houseDetail,
+    HousePreview
   },
   data() {
     return {
@@ -546,6 +554,20 @@ export default {
           window.open(res.excelUrl, '_blank')
         }
       })
+    },
+    handleHousePreview(row) {
+      this.$refs['HousePreview'].handleHousePreview(row)
+    },
+    print(row) {
+      preview({ id: row.id }).then(res => {
+        const iframe = document.createElement('iframe')
+        iframe.setAttribute('style', 'position:absolute;width:0px;height:0px;left:-500px;top:-500px;')
+        document.body.appendChild(iframe)
+        iframe.contentDocument.write(res)
+        iframe.contentDocument.close()
+        iframe.contentWindow.print()
+        document.body.removeChild(iframe)
+      }).catch(() => {})
     },
     getList() {
       const params = Object.assign({}, this.filters)
