@@ -47,11 +47,11 @@
           <span v-else-if="scope.row.status === 2" style="color: #67C23A;">审批通过</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="250">
+      <el-table-column label="操作" width="120">
         <template slot-scope="scope">
-          <el-button size="small" @click="view(scope.row)">查看</el-button>
-          <el-button size="small" type="success" @click="pass(scope.row)" v-if="scope.row.status === 1">通过</el-button>
-          <el-button size="small" type="danger" @click="fail(scope.row)" v-if="scope.row.status === 1">失败</el-button>
+          <el-button size="small" @click="view(scope.row)">明细</el-button>
+          <!-- <el-button size="small" type="success" @click="pass(scope.row)" v-if="scope.row.status === 1">通过</el-button>
+          <el-button size="small" type="danger" @click="fail(scope.row)" v-if="scope.row.status === 1">失败</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -130,7 +130,7 @@ export default {
       this.getList()
     },
     view(row) {
-      this.dialogTitle = '查看'
+      this.dialogTitle = '明细'
       this.editForm = row
       this.dialogFormVisible = true
     },
