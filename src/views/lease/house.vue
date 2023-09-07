@@ -335,6 +335,7 @@ export default {
       formRules: {
         company_id: [{ required: true, message: '请选择租赁公司', trigger: 'blur' }],
         shop_number: [{ required: true, message: '请输入商铺号', trigger: 'blur' }],
+        begin_lease_date: [{ required: true, message: '请选择起始租期', trigger: 'blur' }],
         stat_lease_date: [{ required: true, message: '请选择计租日期', trigger: 'blur' }],
         lease_area: [{ required: true, message: '请输入租赁面积', trigger: 'blur' }],
         lease_year: [{ required: true, message: '请输入租赁年限', trigger: 'blur' }],
