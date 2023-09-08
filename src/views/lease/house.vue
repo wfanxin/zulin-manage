@@ -65,7 +65,7 @@
           <el-button size="small" @click="handleEdit(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">修改</el-button>
           <el-button size="small" type="primary" @click="submitReview(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">提交审批</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 3">删除</el-button>
-          <el-button size="small" @click="view(scope.row)" v-if="scope.row.status === 2">查看</el-button>
+          <el-button size="small" @click="view(scope.row)" v-if="scope.row.status === 1 || scope.row.status === 2">查看</el-button>
           <el-button size="small" type="primary" @click="exportExcel(scope.row)" v-if="scope.row.status === 2">导出excel</el-button>
           <!-- <el-button size="small" @click="handleHousePreview(scope.row)" v-if="scope.row.status === 2">预览</el-button> -->
           <el-button size="small" @click="print(scope.row)" v-if="scope.row.status === 2">打印</el-button>
