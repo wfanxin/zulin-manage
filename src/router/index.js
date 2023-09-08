@@ -70,6 +70,15 @@ export const asyncRouterMap = [
       icon: 'chart'
     },
     children: [{
+      path: 'federation',
+      component: () => import('@/views/lease/federation'),
+      name: '公司联盟',
+      key: '@Get:lv_lease_federation_list',
+      meta: {
+        title: '公司联盟',
+        icon: 'documentation'
+      }
+    }, {
       path: 'company',
       component: () => import('@/views/lease/company'),
       name: '租赁公司',

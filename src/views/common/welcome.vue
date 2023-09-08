@@ -4,6 +4,7 @@
       <el-col :span="1">&nbsp;</el-col>
       <el-col :span="23">
         <el-select v-model="company_id" filterable placeholder="请选择租赁公司" @change="getData">
+          <el-option label="全部" value=""></el-option>
           <el-option
             v-for="item in company_list"
             :key="item.id"
@@ -17,12 +18,14 @@
       <el-col :span="1">&nbsp;</el-col>
       <el-col :span="10">
         <div class="histogram-title">租金</div>
-        <ve-pie :data="chartData" :settings="chartSettings"></ve-pie>
+        <!-- <ve-pie :data="chartData" :settings="chartSettings"></ve-pie> -->
+        <ve-histogram :data="chartData"></ve-histogram>
       </el-col>
       <el-col :span="2">&nbsp;</el-col>
       <el-col :span="10">
         <div class="histogram-title">物业费</div>
-        <ve-pie :data="property_chartData" :settings="chartSettings"></ve-pie>
+        <!-- <ve-pie :data="property_chartData" :settings="chartSettings"></ve-pie> -->
+        <ve-histogram :data="property_chartData"></ve-histogram>
       </el-col>
       <el-col :span="1">&nbsp;</el-col>
     </el-row>

@@ -5,17 +5,7 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters" @submit.native.prevent>
           <el-form-item>
-            <el-select v-model="filters.federation_id" filterable clearable placeholder="请选择">
-              <el-option
-                v-for="item in federation_list"
-                :key="item.id"
-                :label="item.federation_name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="filters.company_name" clearable placeholder="公司名称"></el-input>
+            <el-input v-model="filters.federation_name" clearable placeholder="联盟名称"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="handleSearch">搜索</el-button>
@@ -29,19 +19,13 @@
 
     <!--列表-->
     <el-table v-loading="loading" :data="data" highlight-current-row style="width: 100%;">
-      <el-table-column prop="company_name" label="公司名称">
+      <el-table-column prop="federation_name" label="联盟名称">
       </el-table-column>
-      <el-table-column prop="federation_name" label="所属联盟">
+      <el-table-column prop="contact_name" label="联系人">
       </el-table-column>
-      <el-table-column prop="company_address" label="公司地址">
+      <el-table-column prop="contact_mobile" label="联系电话">
       </el-table-column>
-      <el-table-column prop="contact_name" label="联系人" width="120">
-      </el-table-column>
-      <el-table-column prop="contact_mobile" label="联系电话" width="160">
-      </el-table-column>
-      <el-table-column prop="remark" label="备注">
-      </el-table-column>
-      <el-table-column prop="user_name" label="创建人" width="120" v-if="this.roleKey === 'admin'">
+      <el-table-column prop="user_name" label="创建人" v-if="this.roleKey === 'admin'">
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template slot-scope="scope">
@@ -58,30 +42,14 @@
     <!--编辑界面-->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="false" :show-close="false" width="50%">
       <el-form :model="editForm" label-width="110px" :rules="formRules" ref="form" style="width: 80%">
-        <el-form-item label="公司名称" prop="company_name">
-          <el-input v-model="editForm.company_name" auto-complete="off" ></el-input>
-        </el-form-item>
-        <el-form-item label="所属联盟" prop="company_id">
-          <el-select v-model="editForm.federation_id" filterable placeholder="请选择" style="width: 100%;">
-            <el-option
-              v-for="item in federation_list"
-              :key="item.id"
-              :label="item.federation_name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="公司地址" prop="company_address">
-          <el-input v-model="editForm.company_address" auto-complete="off"></el-input>
+        <el-form-item label="联盟名称" prop="federation_name">
+          <el-input v-model="editForm.federation_name" auto-complete="off" ></el-input>
         </el-form-item>
         <el-form-item label="联系人" prop="contact_name">
           <el-input v-model="editForm.contact_name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="联系电话" prop="contact_mobile">
           <el-input v-model="editForm.contact_mobile" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="editForm.remark" auto-complete="off" type="textarea" :rows="3"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -99,7 +67,7 @@ import {
   add,
   edit,
   del
-} from '@/api/company'
+} from '@/api/federation'
 import {
   fun_getRole
 } from '@/utils/common'
@@ -109,8 +77,7 @@ export default {
     return {
       roleKey: '',
       filters: {
-        federation_id: '',
-        company_name: ''
+        federation_name: ''
       },
       addIsLoading: false,
       editIsLoading: false,
@@ -119,11 +86,10 @@ export default {
       dialogTitle: '',
       editForm: {},
       formRules: {
-        company_name: [{ required: true, message: '请输入公司名称', trigger: 'blur' }]
+        federation_name: [{ required: true, message: '请输入联盟名称', trigger: 'blur' }]
       },
       loading: false,
       data: [],
-      federation_list: [],
       page: 1,
       pageSize: 20,
       total: 0
@@ -183,12 +149,9 @@ export default {
       this.dialogStatus = 'create'
       this.dialogTitle = '添加'
       this.editForm = {
-        federation_id: '',
-        company_name: '',
-        company_address: '',
+        federation_name: '',
         contact_name: '',
-        contact_mobile: '',
-        remark: ''
+        contact_mobile: ''
       }
       this.dialogFormVisible = true
     },
@@ -197,12 +160,9 @@ export default {
       this.dialogTitle = '编辑'
       this.editForm = {
         id: row.id,
-        federation_id: row.federation_id === 0 ? '' : row.federation_id,
-        company_name: row.company_name,
-        company_address: row.company_address,
+        federation_name: row.federation_name,
         contact_name: row.contact_name,
-        contact_mobile: row.contact_mobile,
-        remark: row.remark
+        contact_mobile: row.contact_mobile
       }
       this.dialogFormVisible = true
     },
@@ -237,7 +197,6 @@ export default {
         if (res.code === 0) {
           this.total = res.total
           this.data = res.data
-          this.federation_list = res.federation_list
         }
       }).catch(() => { this.loading = false })
     }
