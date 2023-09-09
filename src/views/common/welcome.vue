@@ -19,13 +19,13 @@
       <el-col :span="10">
         <div class="histogram-title">租金</div>
         <!-- <ve-pie :data="chartData" :settings="chartSettings"></ve-pie> -->
-        <ve-histogram :data="chartData"></ve-histogram>
+        <ve-histogram :data="chartData" :extend="chartExtend"></ve-histogram>
       </el-col>
       <el-col :span="2">&nbsp;</el-col>
       <el-col :span="10">
         <div class="histogram-title">物业费</div>
         <!-- <ve-pie :data="property_chartData" :settings="chartSettings"></ve-pie> -->
-        <ve-histogram :data="property_chartData"></ve-histogram>
+        <ve-histogram :data="property_chartData" :extend="chartExtend"></ve-histogram>
       </el-col>
       <el-col :span="1">&nbsp;</el-col>
     </el-row>
@@ -53,6 +53,18 @@ export default {
           formatter: function(data) {
             return `${data.name}
             ${data.value} (${data.percent.toFixed(1)}%)`
+          }
+        }
+      },
+      chartExtend: {
+        series: {
+          type: 'bar',
+          barWidth: '10%',
+          label: {
+            normal: {
+              show: true,
+              position: 'top'
+            }
           }
         }
       }
