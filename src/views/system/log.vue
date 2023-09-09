@@ -36,8 +36,8 @@
 		<el-table v-loading="loading" :data="logs" highlight-current-row style="width: 100%;">
 			<el-table-column prop="user_name" label="操作人员账号">
 			</el-table-column>
-      <el-table-column prop="op_uid" label="操作人员id">
-			</el-table-column>
+      <!-- <el-table-column prop="op_uid" label="操作人员id">
+			</el-table-column> -->
       <el-table-column prop="ip" label="操作人员ip">
 			</el-table-column>
       <el-table-column prop="request.name" label="操作权限">

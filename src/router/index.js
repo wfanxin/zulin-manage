@@ -160,7 +160,7 @@ export const asyncRouterMap = [
       component: () => import('@/views/system/log'),
       name: '操作日志',
       key: '@Get:lv_logs',
-      hidden: true,
+      // hidden: true,
       meta: {
         title: '操作日志',
         icon: 'form'
