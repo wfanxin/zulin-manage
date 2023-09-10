@@ -63,6 +63,9 @@
         </el-form-item>
 			</el-form>
 		</el-dialog>
+
+    <!-- 查看租赁合同明细 -->
+    <HouseContractDetail ref="HouseContractDetail" @db-click="closeContractDetail"></HouseContractDetail>
   </el-menu>
 </template>
 
@@ -75,6 +78,7 @@ import nxFullScreen from '@/components/nx-full-screen/index'
 import nxLangSelect from '@/components/nx-lang-select/index'
 import nxGithub from '@/components/nx-github/index'
 import nxSkin from '@/components/nx-skin/index'
+import HouseContractDetail from '@/components/lease/house-contract-detail'
 import store from '@/store'
 import { changePwd } from '@/api/user-table'
 import { getNotice, read } from '@/api/notice'
@@ -166,11 +170,13 @@ export default {
           { required: true, message: '请输入重复密码', trigger: 'blur' },
           { true: false, validator: rePwd, trigger: 'blur' }
         ]
-      }
+      },
+      notification: null
     }
   },
   name: 'navBar',
   components: {
+    HouseContractDetail,
     nxBreadcrumb,
     nxHamburger,
     // nxHelp,
@@ -233,20 +239,58 @@ export default {
       setTimeout(() => {
         getNotice({}).then(res => {
           if (res.code === 0 && res.data) {
-            this.$notify({
-              title: '',
-              dangerouslyUseHTMLString: true,
-              message: '<div style="font-weight: bold;">' + res.data.title + '</div><div>' + res.data.created_at + '</div><div style="color: #409EFF;">' + res.data.content + '</div>',
-              duration: 0,
-              onClose: () => {
-                this.read(res.data.id)
+            const h = this.$createElement
+            const button = h('el-button', {
+              style: {
+                float: 'right'
+              },
+              props: {
+                type: 'primary',
+                size: 'mini'
+              },
+              on: {
+                click: () => {
+                  this.notification.close()
+                  this.showDetail(res.data)
+                }
               }
+            }, res.data.type === 1 ? '知道了' : '查看')
+            // const createAt = h('div', {}, res.data.created_at)
+            const content = h('div', {
+              style: {
+                margin: '10px 0'
+              }
+            }, res.data.content)
+            this.notification = this.$notify({
+              title: res.data.title,
+              dangerouslyUseHTMLString: true,
+              message: h('div', {
+                style: {
+                  width: '280px'
+                }
+              }, [
+                // createAt,
+                content,
+                button
+              ]),
+              showClose: false,
+              duration: 0
             })
           } else {
             this.getNotice()
           }
         }).catch(() => { this.getNotice() })
       }, 3000)
+    },
+    showDetail(row) {
+      if (row.type === 1) {
+        this.read(row.id) // 已读，审批通知直接已读
+      } else {
+        this.$refs['HouseContractDetail'].handleHouseContractDetail(row)
+      }
+    },
+    closeContractDetail(row) {
+      this.read(row.id) // 已读，缴费通知，查看后关闭再设为已读
     },
     read(id) {
       read({ id: id }).then(res => {

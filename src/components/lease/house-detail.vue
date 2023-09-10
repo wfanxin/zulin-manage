@@ -1,6 +1,6 @@
 <template>
   <el-form label-width="110px">
-    <div class="form-item-title">租金</div>
+    <div class="form-item-title" style="line-height: 50px;">租金</div>
     <el-row>
       <el-col :span="8">
         <el-form-item label="租赁公司" prop="company_id">
@@ -77,7 +77,7 @@
       </el-col>
     </el-row>
 
-    <div class="form-item-title">物业费</div>
+    <div class="form-item-title" style="line-height: 50px;">物业费</div>
     <el-row>
       <el-col :span="8">
         <el-form-item label="物业合同编号" prop="property_contract_number">
@@ -112,7 +112,7 @@
       </el-col>
     </el-row>
 
-        <!-- 租金涨幅配置 -->
+    <!-- 租金涨幅配置 -->
     <el-dialog title="租金涨幅配置" :visible.sync="dialogSetTableVisible" :close-on-click-modal="false" :append-to-body="true" width="600px">
       <el-form>
         <el-row>

@@ -48,6 +48,14 @@ export function exportExcel(params) {
   })
 }
 
+export function detail(params) {
+  return request({
+    url: '/lv/lease/house/detail',
+    method: 'get',
+    params: params
+  })
+}
+
 export function preview(params) {
   return request({
     url: '/lv/lease/house/preview',

@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" @click="read(scope.row)" v-if="scope.row.is_read === 0">已读</el-button>
+          <el-button size="small" @click="handleHouseContractDetail(scope.row)" v-if="scope.row.type !== 1">明细</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -47,6 +47,9 @@
 	  <!--页码-->
     <el-pagination background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="page" :page-size="pageSize" :total="total" style="text-align:center;margin-top:10px">
     </el-pagination>
+
+    <!-- 查看租赁合同明细 -->
+    <HouseContractDetail ref="HouseContractDetail" @db-click="closeContractDetail"></HouseContractDetail>
 	</section>
 </template>
 
@@ -58,11 +61,11 @@ import {
 import {
   fun_getRole
 } from '@/utils/common'
-import houseDetail from '@/components/lease/house-detail'
+import HouseContractDetail from '@/components/lease/house-contract-detail'
 
 export default {
   components: {
-    houseDetail
+    HouseContractDetail
   },
   data() {
     return {
@@ -91,6 +94,14 @@ export default {
     handleSearch() {
       this.page = 1
       this.getList()
+    },
+    handleHouseContractDetail(row) {
+      this.$refs['HouseContractDetail'].handleHouseContractDetail(row)
+    },
+    closeContractDetail(row) {
+      if (row.is_read === 0) { // 未读
+        this.read(row) // 已读，缴费通知，查看后关闭再设为已读
+      }
     },
     read(row) {
       read({ id: row.id }).then(res => {
