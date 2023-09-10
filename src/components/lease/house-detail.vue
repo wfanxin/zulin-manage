@@ -29,8 +29,15 @@
         <el-form-item label="单价元/㎡/日" prop="unit_price">
           <el-input v-model="detail.unit_price" auto-complete="off" class="input-class" disabled></el-input>
         </el-form-item>
-        <el-form-item label="租金涨幅">
-          <el-button type="text" size="small" @click="setIncrease">查看</el-button>
+        <el-form-item label="租金支付方式" prop="pay_method">
+          <el-select v-model="detail.pay_method" placeholder="请选择" disabled>
+            <el-option
+              v-for="item in pay_method_list"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -53,6 +60,9 @@
         <el-form-item label="履约保证金" prop="performance_bond">
           <el-input v-model="detail.performance_bond" auto-complete="off" class="input-class" disabled></el-input>
         </el-form-item>
+        <el-form-item label="租金涨幅">
+          <el-button type="text" size="small" @click="setIncrease">查看</el-button>
+        </el-form-item>
       </el-col>
       <el-col :span="8">
         <el-form-item label="租赁面积㎡" prop="lease_area">
@@ -64,15 +74,11 @@
         <el-form-item label="租赁合同编号" prop="contract_number">
           <el-input v-model="detail.contract_number" auto-complete="off" class="input-class" disabled></el-input>
         </el-form-item>
-        <el-form-item label="租金支付方式" prop="pay_method">
-          <el-select v-model="detail.pay_method" placeholder="请选择" disabled>
-            <el-option
-              v-for="item in pay_method_list"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+        <el-form-item label="免租经营期" prop="free_period">
+          <el-input v-model="detail.free_period" auto-complete="off" class="input-class" disabled></el-input>
+        </el-form-item>
+        <el-form-item v-if="detail.pay_method === -1" label="计租日(天数)" prop="rent_day">
+          <el-input-number v-model="detail.rent_day" :min="1" auto-complete="off" class="input-class" disabled></el-input-number>
         </el-form-item>
       </el-col>
     </el-row>
@@ -85,6 +91,9 @@
         </el-form-item>
         <el-form-item label="单价元/㎡/月" prop="property_unit_price">
           <el-input v-model="detail.property_unit_price" auto-complete="off" class="input-class" disabled></el-input>
+        </el-form-item>
+        <el-form-item v-if="detail.property_pay_method === -1" label="计租日(天数)" prop="property_rent_day">
+          <el-input-number v-model="detail.property_rent_day" :min="1" auto-complete="off" class="input-class" disabled></el-input-number>
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -141,9 +150,6 @@
                 <el-input v-model="item.unit_price" auto-complete="off" placeholder="租金单价" class="input-class" disabled><template slot="append">元/㎡/日</template></el-input>
               </el-form-item>
             </el-col>
-            <!-- <el-col :span="12">
-              <el-input v-model="item.year_price" auto-complete="off" placeholder="年租金" class="input-class"><template slot="append">元</template></el-input>
-            </el-col> -->
           </template>
         </el-row>
       </el-form>
@@ -178,9 +184,6 @@
                 <el-input v-model="item.unit_price" auto-complete="off" placeholder="租金单价" class="input-class" disabled><template slot="append">元/㎡/月</template></el-input>
               </el-form-item>
             </el-col>
-            <!-- <el-col :span="12">
-              <el-input v-model="item.year_price" auto-complete="off" placeholder="年租金" class="input-class"><template slot="append">元</template></el-input>
-            </el-col> -->
           </template>
         </el-row>
       </el-form>
