@@ -118,6 +118,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item v-if="editForm.pay_method === -1" label="备注" prop="remark">
+              <el-input v-model="editForm.remark" auto-complete="off" class="input-class"></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="商铺号" prop="shop_number">
@@ -158,6 +161,9 @@
             <el-form-item v-if="editForm.pay_method === -1" label="计租日(天数)" prop="rent_day">
               <el-input-number v-model="editForm.rent_day" :min="1" auto-complete="off" class="input-class"></el-input-number>
             </el-form-item>
+            <el-form-item v-else label="备注" prop="remark">
+              <el-input v-model="editForm.remark" auto-complete="off" class="input-class"></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
 
@@ -173,6 +179,9 @@
             <el-form-item v-if="editForm.property_pay_method === -1" label="计租日(天数)" prop="property_rent_day">
               <el-input-number v-model="editForm.property_rent_day" :min="1" auto-complete="off" class="input-class"></el-input-number>
             </el-form-item>
+            <el-form-item v-else label="备注" prop="property_remark">
+              <el-input v-model="editForm.property_remark" auto-complete="off" class="input-class"></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="安全责任人" prop="property_safety_person">
@@ -187,6 +196,9 @@
                   :value="item.value">
                 </el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item v-if="editForm.property_pay_method === -1" label="备注" prop="property_remark">
+              <el-input v-model="editForm.property_remark" auto-complete="off" class="input-class"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -345,8 +357,8 @@ export default {
         unit_price: [{ required: true, message: '请输入租金单价', trigger: 'blur' }],
         pay_method: [{ required: true, message: '请选择租金支付方式', trigger: 'blur' }],
         rent_day: [{ required: true, message: '请输入租金计租日', trigger: 'blur' }],
-        property_unit_price: [{ required: true, message: '请输入物业费单价', trigger: 'blur' }],
-        property_pay_method: [{ required: true, message: '请选择物业支付方式', trigger: 'blur' }],
+        // property_unit_price: [{ required: true, message: '请输入物业费单价', trigger: 'blur' }],
+        // property_pay_method: [{ required: true, message: '请选择物业支付方式', trigger: 'blur' }],
         property_rent_day: [{ required: true, message: '请输入物业计租日', trigger: 'blur' }]
       },
       dialogSetTableVisible: false,
@@ -434,6 +446,7 @@ export default {
         rent_day: 1,
         increase_type: 1,
         increase_content: [],
+        remark: '',
 
         property_contract_number: '',
         property_safety_person: '',
@@ -442,7 +455,8 @@ export default {
         property_pay_method: '',
         property_rent_day: 1,
         property_increase_type: 1,
-        property_increase_content: []
+        property_increase_content: [],
+        property_remark: ''
       }
       this.dialogFormVisible = true
     },
@@ -467,6 +481,7 @@ export default {
         rent_day: row.rent_day,
         increase_type: row.increase_type,
         increase_content: row.increase_content,
+        remark: row.remark,
 
         property_contract_number: row.property_contract_number,
         property_safety_person: row.property_safety_person,
@@ -475,7 +490,8 @@ export default {
         property_pay_method: row.property_pay_method,
         property_rent_day: row.property_rent_day,
         property_increase_type: row.property_increase_type,
-        property_increase_content: row.property_increase_content
+        property_increase_content: row.property_increase_content,
+        property_remark: row.property_remark
       }
       this.dialogFormVisible = true
     },

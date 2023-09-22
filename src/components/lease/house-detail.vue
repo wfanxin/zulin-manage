@@ -39,6 +39,9 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item v-if="detail.pay_method === -1" label="备注" prop="remark">
+          <el-input v-model="detail.remark" auto-complete="off" class="input-class" disabled></el-input>
+        </el-form-item>
       </el-col>
       <el-col :span="8">
         <el-form-item label="商铺号" prop="shop_number">
@@ -80,6 +83,9 @@
         <el-form-item v-if="detail.pay_method === -1" label="计租日(天数)" prop="rent_day">
           <el-input-number v-model="detail.rent_day" :min="1" auto-complete="off" class="input-class" disabled></el-input-number>
         </el-form-item>
+        <el-form-item v-else label="备注" prop="remark">
+          <el-input v-model="detail.remark" auto-complete="off" class="input-class" disabled></el-input>
+        </el-form-item>
       </el-col>
     </el-row>
 
@@ -95,6 +101,9 @@
         <el-form-item v-if="detail.property_pay_method === -1" label="计租日(天数)" prop="property_rent_day">
           <el-input-number v-model="detail.property_rent_day" :min="1" auto-complete="off" class="input-class" disabled></el-input-number>
         </el-form-item>
+        <el-form-item v-else label="备注" prop="property_remark">
+          <el-input v-model="detail.property_remark" auto-complete="off" class="input-class" disabled></el-input>
+        </el-form-item>
       </el-col>
       <el-col :span="8">
         <el-form-item label="安全责任人" prop="property_safety_person">
@@ -109,6 +118,9 @@
               :value="item.value">
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item v-if="detail.property_pay_method === -1" label="备注" prop="property_remark">
+          <el-input v-model="detail.property_remark" auto-complete="off" class="input-class" disabled></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="8">
