@@ -9,20 +9,20 @@
 				<el-form-item>
 					<el-button type="primary" v-on:click="handleSearch">查询</el-button>
 				</el-form-item>
-				<el-form-item>
+				<!-- <el-form-item>
 					<el-button type="primary" @click="handleAdd">新增</el-button>
 				</el-form-item>
-          <el-form-item>
-            <el-button type="danger" @click="batchRemove" :disabled="this.sels.length === 0">批量删除</el-button>
-          </el-form-item>
+        <el-form-item>
+          <el-button type="danger" @click="batchRemove" :disabled="this.sels.length === 0">批量删除</el-button>
+        </el-form-item> -->
 			</el-form>
 		</el-col>
 
 		<!--列表-->
 		<el-table v-loading="loading" :data="roles" highlight-current-row @selection-change="selsChange" style="width: 100%;">
-			<el-table-column type="selection" width="55">
-			</el-table-column>
-			<el-table-column type="index" width="60">
+			<!-- <el-table-column type="selection" width="55">
+			</el-table-column> -->
+			<el-table-column type="index" label="ID" width="60">
 			</el-table-column>
 			<el-table-column prop="name" label="角色名称">
 			</el-table-column>
@@ -33,7 +33,7 @@
 			<el-table-column label="操作" width="150">
 				<template slot-scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+					<!-- <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -50,7 +50,7 @@
      :show-close="false" :fullscreen="true">
 			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
 				<el-form-item label="角色名称" prop="name">
-					<el-input v-model="editForm.name" auto-complete="off"></el-input>
+					<el-input v-model="editForm.name" auto-complete="off" disabled></el-input>
 				</el-form-item>
         <el-form-item label="权限" prop="rolePermissions">
           <div class="permisson-box">
